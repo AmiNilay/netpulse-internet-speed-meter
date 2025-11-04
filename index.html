@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetPulse</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #00e5ff;
+      --bg-dark: #0f2027;
+      --bg-light: #2c5364;
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark), var(--bg-light));
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 40px 20px;
+      text-align: center;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+    }
+
+    header h1 {
+      font-size: 3em;
+    }
+
+    nav {
+      margin-top: 15px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .hero {
+      text-align: center;
+    }
+
+    .hero p {
+      font-size: 1.1em;
+      max-width: 700px;
+      margin: 20px auto;
+    }
+
+    .download-btn {
+      background: var(--primary);
+      color: #000;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .download-btn:hover {
+      background: #00bcd4;
+      transform: scale(1.05);
+    }
+
+    .social-links {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .social-links a {
+      margin: 0 10px;
+      font-size: 1.8em;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--primary);
+    }
+
+    .features-grid,
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: var(--glass);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .feature-card p {
+      font-size: 0.95em;
+    }
+
+    .gallery img {
+      width: 100%;
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      background: var(--glass);
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #ccc;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.2em;
+      }
+
+      nav a {
+        display: inline-block;
+        margin: 10px 8px;
+        font-size: 1em;
+      }
+
+      .download-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+      }
+
+      h2 {
+        font-size: 1.6em;
+      }
+
+      .hero p {
+        font-size: 1em;
+      }
+
+      .feature-card p {
+        font-size: 0.9em;
+      }
+
+      .social-links a {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NetPulse</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#screenshots">Screenshots</a>
+    </nav>
+  </header>
+
+  <section id="home" class="hero">
+    <h2>Welcome to NetPulse</h2>
+    <p>Experience the next generation of internet speed monitoring with real-time analytics, elegant dashboards, and seamless performance tracking — all in one sleek app.</p>
+    <button class="download-btn" onclick="downloadFile()">📥 Download APK</button>
+    <div class="social-links">
+      <a href="https://github.com/AmiNilay" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://x.com/naha_nilay" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="https://www.linkedin.com/in/nilay-naha" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.instagram.com/nilaynaha2003" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>Core Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>📜 Dynamic Title</h3>
+        <p>The header updates based on the data type being viewed (e.g., "Mobile Data History").</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔙 Back Arrow</h3>
+        <p>Quick navigation back to the home screen with a built-in back icon.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📃 Scrollable List</h3>
+        <p>Displays the last 60 days of data in reverse chronological order.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🚫 Empty State</h3>
+        <p>Shows "No history data available" if no records exist.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📊 Today Item</h3>
+        <p>Always appears first, updates in real-time, and includes full date with weekday.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📅 Past Day Items</h3>
+        <p>Show date, total usage, and percentage change compared to the previous day.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📈 Change Badges</h3>
+        <p>Green for increase, Red for decrease, Gray for "N/A" when no comparison is available.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔢 Auto Formatting</h3>
+        <p>Usage is displayed in B, KB, MB, or GB automatically.</p>
+      </div>
+      <div class="feature-card">
+        <h3>💾 Data Storage</h3>
+        <p>History is saved in SharedPreferences for long-term persistence.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔁 Persistence</h3>
+        <p>Data survives app restarts and device reboots.</p>
+      </div>
+      <div class="feature-card">
+        <h3>⏱️ Auto-Save</h3>
+        <p>Usage is saved every 60 seconds and at midnight daily.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+  <section id="screenshots">
+    <h2>App Screenshots</h2>
+    <div class="gallery">
+      <img src="assets/screenshot1.jpg" alt="App Screenshot 1" />
+      <img src="assets/screenshot2.jpg" alt="App Screenshot 2" />
+      <img src="assets/screenshot3.jpg" alt="App Screenshot 3" />
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 - 2030 NetPulse. Crafted with care by Nilay Naha.
+  </footer>
+
+  <script>
+    function downloadFile() {
+      const link = document.createElement('a');
+      link.href = 'https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.0/NetPulse.apk';
+      link.download = 'NetPulse.apk';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
