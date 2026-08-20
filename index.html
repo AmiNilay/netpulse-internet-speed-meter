@@ -3,283 +3,818 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NetPulse</title>
+  <title>NetPulse — Internet Speed Meter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
-      --primary: #00e5ff;
-      --bg-dark: #0f2027;
-      --bg-light: #2c5364;
-      --glass: rgba(255, 255, 255, 0.05);
+      --background: #FAFAFA;
+      --foreground: #0A0A0A;
+      --muted: #F4F4F5;
+      --muted-foreground: #71717A;
+      --accent: #059669;
+      --accent-secondary: #34D399;
+      --accent-foreground: #FFFFFF;
+      --border: #E4E4E7;
+      --card: #FFFFFF;
+      --amber: #F59E0B;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark), var(--bg-light));
-      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
       line-height: 1.6;
     }
 
-    header {
-      padding: 40px 20px;
-      text-align: center;
-      background: var(--glass);
-      backdrop-filter: blur(10px);
+    .font-display { font-family: 'Calistoga', Georgia, serif; font-weight: 400; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .gradient-text {
+      background: linear-gradient(to right, var(--accent), var(--accent-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    header h1 {
-      font-size: 3em;
+    .gradient-bg { background: linear-gradient(to right, var(--accent), var(--accent-secondary)); }
+    .gradient-bg-diag { background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); }
+
+    .gradient-border {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      padding: 2px;
     }
 
-    nav {
-      margin-top: 15px;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes spin-reverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
     }
 
-    nav a {
-      margin: 0 15px;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1em;
-      transition: color 0.3s;
+    .animate-float { animation: float 5s ease-in-out infinite; }
+    .animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+    .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+    .animate-spin-slow { animation: spin-slow 60s linear infinite; }
+    .animate-spin-reverse { animation: spin-reverse 80s linear infinite; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .dot-pattern {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
-    nav a:hover {
-      color: #fff;
-    }
+    .shadow-accent { box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25); }
+    .shadow-accent-lg { box-shadow: 0 8px 28px rgba(5, 150, 105, 0.35); }
+    .shadow-soft { box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .shadow-card { box-shadow: 0 4px 6px rgba(0,0,0,0.07); }
+    .shadow-lifted { box-shadow: 0 10px 15px rgba(0,0,0,0.08); }
+    .shadow-hero { box-shadow: 0 20px 25px rgba(0,0,0,0.10); }
 
-    section {
-      padding: 60px 20px;
-      max-width: 1200px;
-      margin: auto;
+    .btn-primary {
+      background: linear-gradient(to right, var(--accent), var(--accent-secondary));
+      color: white;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
     }
-
-    h2 {
-      color: var(--primary);
-      font-size: 2em;
-      margin-bottom: 20px;
-      text-align: center;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.35);
+      filter: brightness(1.08);
     }
-
-    .hero {
-      text-align: center;
-    }
-
-    .hero p {
-      font-size: 1.1em;
-      max-width: 700px;
-      margin: 20px auto;
-    }
-
-    .download-btn {
-      background: var(--primary);
-      color: #000;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 20px;
-    }
-
-    .download-btn:hover {
-      background: #00bcd4;
-      transform: scale(1.05);
-    }
-
-    .social-links {
-      margin-top: 30px;
-      text-align: center;
-    }
-
-    .social-links a {
-      margin: 0 10px;
-      font-size: 1.8em;
-      color: #fff;
-      transition: color 0.3s;
-    }
-
-    .social-links a:hover {
-      color: var(--primary);
-    }
-
-    .features-grid,
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
+    .btn-primary:active { transform: scale(0.98); }
 
     .feature-card {
-      background: var(--glass);
-      padding: 20px;
-      border-radius: 15px;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(5,150,105,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
     .feature-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px rgba(0,0,0,0.10);
+      border-color: rgba(5, 150, 105, 0.3);
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .icon-tile {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.30);
     }
 
-    .feature-card h3 {
-      margin-bottom: 10px;
-      color: var(--primary);
-    }
-
-    .feature-card p {
-      font-size: 0.95em;
-    }
-
-    .gallery img {
+    .gradient-underline {
+      position: absolute;
+      bottom: -0.15rem;
+      left: 0;
+      height: 0.6rem;
       width: 100%;
-      border-radius: 15px;
-      transition: transform 0.3s ease;
+      border-radius: 0.125rem;
+      background: linear-gradient(to right, rgba(5, 150, 105, 0.18), rgba(52, 211, 153, 0.08));
+      z-index: -1;
     }
 
-    .gallery img:hover {
-      transform: scale(1.05);
+    /* Phone mockup */
+    .phone-frame {
+      background: #0A0A0A;
+      border-radius: 2.5rem;
+      padding: 0.5rem;
+      box-shadow: 0 30px 60px -15px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+    .phone-screen {
+      border-radius: 2rem;
+      overflow: hidden;
+      background: #FAFAFA;
     }
 
-    footer {
-      background: var(--glass);
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9em;
-      color: #ccc;
-      margin-top: 60px;
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--muted); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #047857; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
 
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2.2em;
-      }
+    .nav-blur {
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      background: rgba(250, 250, 250, 0.72);
+    }
 
-      nav a {
-        display: inline-block;
-        margin: 10px 8px;
-        font-size: 1em;
-      }
-
-      .download-btn {
-        padding: 12px 25px;
-        font-size: 1em;
-      }
-
-      h2 {
-        font-size: 1.6em;
-      }
-
-      .hero p {
-        font-size: 1em;
-      }
-
-      .feature-card p {
-        font-size: 0.9em;
-      }
-
-      .social-links a {
-        font-size: 1.5em;
-      }
+    .glow-orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      pointer-events: none;
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>NetPulse</h1>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#features">Features</a>
-      <a href="#screenshots">Screenshots</a>
-    </nav>
-  </header>
+<body class="overflow-x-hidden">
 
-  <section id="home" class="hero">
-    <h2>Welcome to NetPulse</h2>
-    <p>Experience the next generation of internet speed monitoring with real-time analytics, elegant dashboards, and seamless performance tracking — all in one sleek app.</p>
-    <button class="download-btn" onclick="downloadFile()">📥 Download APK</button>
-    <div class="social-links">
-      <a href="https://github.com/AmiNilay" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://x.com/naha_nilay" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="https://www.linkedin.com/in/nilay-naha" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      <a href="https://www.instagram.com/nilaynaha2003" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+  <!-- ============== NAVIGATION ============== -->
+  <nav class="fixed top-0 inset-x-0 z-50 nav-blur border-b border-[var(--border)]">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2.5 group">
+        <span class="relative w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-accent">
+          <i class="fas fa-bolt text-white text-sm"></i>
+          <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse-dot ring-2 ring-[var(--background)]"></span>
+        </span>
+        <span class="font-display text-xl tracking-tight">NetPulse</span>
+      </a>
+      <div class="hidden md:flex items-center gap-1">
+        <a href="#home" class="px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">Home</a>
+        <a href="#whats-new" class="px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">What's New</a>
+        <a href="#features" class="px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">Features</a>
+        <a href="#screenshots" class="px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">Screenshots</a>
+      </div>
+      <button onclick="downloadFile()" class="btn-primary hidden sm:inline-flex items-center gap-2 px-5 h-10 rounded-xl text-sm font-semibold">
+        <i class="fas fa-download text-xs"></i>
+        Download APK
+      </button>
+      <button class="md:hidden w-10 h-10 flex items-center justify-center" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-[var(--border)] px-5 py-4 nav-blur">
+      <div class="flex flex-col gap-1">
+        <a href="#home" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[var(--muted)]">Home</a>
+        <a href="#whats-new" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[var(--muted)]">What's New</a>
+        <a href="#features" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[var(--muted)]">Features</a>
+        <a href="#screenshots" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[var(--muted)]">Screenshots</a>
+        <button onclick="downloadFile()" class="btn-primary mt-2 inline-flex items-center justify-center gap-2 px-5 h-11 rounded-xl text-sm font-semibold">
+          <i class="fas fa-download text-xs"></i> Download APK
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============== HERO ============== -->
+  <section id="home" class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
+    <!-- Ambient glows -->
+    <div class="glow-orb w-[400px] h-[400px] bg-[var(--accent)] opacity-[0.07] -top-20 -right-20"></div>
+    <div class="glow-orb w-[300px] h-[300px] bg-[var(--accent-secondary)] opacity-[0.06] top-40 -left-20"></div>
+
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 relative">
+      <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-8 items-center">
+
+        <!-- Left: Content -->
+        <div class="reveal">
+          <!-- Section label -->
+          <div class="inline-flex items-center gap-3 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-5 py-2 mb-7">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75 animate-ping"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]"></span>
+            </span>
+            <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">Version 2.0 · Now Live</span>
+          </div>
+
+          <h1 class="font-display text-[2.75rem] sm:text-6xl lg:text-[5.25rem] leading-[1.02] tracking-tight">
+            Monitor your speed<br>
+            <span class="relative inline-block">
+              <span class="gradient-text">in real time.</span>
+              <span class="gradient-underline"></span>
+            </span>
+          </h1>
+
+          <p class="mt-7 text-lg text-[var(--muted-foreground)] max-w-xl leading-relaxed">
+            NetPulse brings a complete UI overhaul, persistent data history, a dynamic status bar icon, and a host of new settings — all wrapped in a modern, card-based interface with full light & dark mode support.
+          </p>
+
+          <div class="mt-9 flex flex-col sm:flex-row gap-3">
+            <button onclick="downloadFile()" class="btn-primary group inline-flex items-center justify-center gap-2.5 px-7 h-14 rounded-xl text-base font-semibold">
+              <i class="fas fa-download"></i>
+              <span>Download APK</span>
+              <i class="fas fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
+            </button>
+            <a href="#features" class="inline-flex items-center justify-center gap-2.5 px-7 h-14 rounded-xl text-base font-semibold border border-[var(--border)] bg-[var(--card)] hover:bg-[var(--muted)] hover:border-[var(--accent)]/30 transition-all">
+              Explore Features
+            </a>
+          </div>
+
+          <!-- Social links -->
+          <div class="mt-10 flex items-center gap-3">
+            <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--muted-foreground)] mr-2">Connect</span>
+            <a href="https://github.com/AmiNilay" target="_blank" title="GitHub" class="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--card)] flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 hover:-translate-y-0.5 transition-all">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="https://x.com/naha_nilay" target="_blank" title="Twitter" class="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--card)] flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 hover:-translate-y-0.5 transition-all">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/nilay-naha" target="_blank" title="LinkedIn" class="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--card)] flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 hover:-translate-y-0.5 transition-all">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://www.instagram.com/nilaynaha2003" target="_blank" title="Instagram" class="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--card)] flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 hover:-translate-y-0.5 transition-all">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Animated graphic / Phone mockup -->
+        <div class="relative reveal hidden lg:block" style="transition-delay: 0.15s;">
+          <div class="relative w-full max-w-[340px] mx-auto">
+
+            <!-- Rotating dashed ring -->
+            <div class="absolute -inset-10 flex items-center justify-center pointer-events-none">
+              <div class="w-[420px] h-[420px] rounded-full border-2 border-dashed border-[var(--accent)]/25 animate-spin-slow"></div>
+            </div>
+            <div class="absolute -inset-6 flex items-center justify-center pointer-events-none">
+              <div class="w-[360px] h-[360px] rounded-full border border-[var(--accent)]/15 animate-spin-reverse"></div>
+            </div>
+
+            <!-- Decorative dot grid 3x3 -->
+            <div class="absolute -top-4 -left-8 grid grid-cols-3 gap-2 opacity-40">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+            </div>
+
+            <!-- Corner accent block -->
+            <div class="absolute -bottom-6 -right-6 w-20 h-20 rounded-2xl gradient-bg-diag shadow-accent-lg"></div>
+
+            <!-- Phone -->
+            <div class="phone-frame relative animate-float">
+              <div class="phone-screen">
+                <!-- Status bar -->
+                <div class="flex justify-between items-center px-6 pt-4 pb-2 text-[10px] font-semibold text-[var(--foreground)]">
+                  <span>9:41</span>
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-signal text-[8px]"></i>
+                    <i class="fas fa-wifi text-[8px]"></i>
+                    <i class="fas fa-battery-full text-[8px]"></i>
+                  </div>
+                </div>
+                <!-- App content -->
+                <div class="px-4 pb-5 space-y-3">
+                  <div class="flex justify-between items-center pt-2">
+                    <span class="font-display text-lg">NetPulse</span>
+                    <i class="fas fa-cog text-[var(--muted-foreground)] text-xs"></i>
+                  </div>
+                  <!-- Date card -->
+                  <div class="bg-[var(--muted)] rounded-xl p-3">
+                    <div class="font-mono text-[9px] uppercase tracking-wider text-[var(--muted-foreground)]">Today</div>
+                    <div class="font-semibold text-xs">Mon, 15 Jan 2025 · 14:32</div>
+                  </div>
+                  <!-- Speed cards -->
+                  <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-[var(--accent)]/10 rounded-xl p-3 border border-[var(--accent)]/20">
+                      <div class="flex items-center gap-1.5">
+                        <i class="fas fa-arrow-down text-[9px] text-[var(--accent)]"></i>
+                        <span class="font-mono text-[9px] text-[var(--accent)] font-medium">DOWN</span>
+                      </div>
+                      <div class="font-display text-2xl text-[var(--accent)] leading-tight mt-1">127.5</div>
+                      <div class="text-[10px] text-[var(--muted-foreground)]">MB/s</div>
+                    </div>
+                    <div class="bg-[var(--amber)]/10 rounded-xl p-3 border border-[var(--amber)]/20">
+                      <div class="flex items-center gap-1.5">
+                        <i class="fas fa-arrow-up text-[9px] text-[var(--amber)]"></i>
+                        <span class="font-mono text-[9px] text-[var(--amber)] font-medium">UP</span>
+                      </div>
+                      <div class="font-display text-2xl text-[var(--amber)] leading-tight mt-1">45.2</div>
+                      <div class="text-[10px] text-[var(--muted-foreground)]">MB/s</div>
+                    </div>
+                  </div>
+                  <!-- Status -->
+                  <div class="bg-[var(--muted)] rounded-xl p-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse-dot"></span>
+                    <span class="text-[11px] font-medium">WiFi Connected</span>
+                  </div>
+                  <!-- Data usage -->
+                  <div class="bg-[var(--muted)] rounded-xl p-3">
+                    <div class="flex justify-between items-center">
+                      <span class="font-mono text-[9px] uppercase tracking-wider text-[var(--muted-foreground)]">Mobile Data</span>
+                      <i class="fas fa-bell text-[10px] text-[var(--accent)]"></i>
+                    </div>
+                    <div class="font-semibold text-xs mt-0.5">5.2 GB / 10 GB</div>
+                    <div class="mt-2 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
+                      <div class="h-full w-[52%] gradient-bg rounded-full"></div>
+                    </div>
+                  </div>
+                  <div class="bg-[var(--muted)] rounded-xl p-3">
+                    <div class="font-mono text-[9px] uppercase tracking-wider text-[var(--muted-foreground)]">Total Today</div>
+                    <div class="font-display text-lg mt-0.5">93.9 <span class="text-xs text-[var(--muted-foreground)]">GB</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating live speed badge -->
+            <div class="absolute -left-12 top-20 bg-white rounded-2xl shadow-lifted p-3.5 animate-float-slow border border-[var(--border)]">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl icon-tile flex items-center justify-center">
+                  <i class="fas fa-bolt text-white text-sm"></i>
+                </div>
+                <div>
+                  <div class="font-mono text-[9px] uppercase tracking-wider text-[var(--muted-foreground)]">Live</div>
+                  <div class="font-display text-base leading-none">172.8 <span class="text-[10px] text-[var(--muted-foreground)]">MB/s</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating status bar icon badge -->
+            <div class="absolute -right-8 bottom-24 bg-[var(--foreground)] text-white rounded-2xl shadow-lifted p-3.5 animate-float" style="animation-delay: -2s;">
+              <div class="font-mono text-[9px] uppercase tracking-wider text-white/50">Status Bar</div>
+              <div class="font-display text-base mt-0.5 text-[var(--accent-secondary)]">↓ 127.5</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="features">
-    <h2>Core Features</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <h3>📜 Dynamic Title</h3>
-        <p>The header updates based on the data type being viewed (e.g., "Mobile Data History").</p>
-      </div>
-      <div class="feature-card">
-        <h3>🔙 Back Arrow</h3>
-        <p>Quick navigation back to the home screen with a built-in back icon.</p>
-      </div>
-      <div class="feature-card">
-        <h3>📃 Scrollable List</h3>
-        <p>Displays the last 60 days of data in reverse chronological order.</p>
-      </div>
-      <div class="feature-card">
-        <h3>🚫 Empty State</h3>
-        <p>Shows "No history data available" if no records exist.</p>
-      </div>
-      <div class="feature-card">
-        <h3>📊 Today Item</h3>
-        <p>Always appears first, updates in real-time, and includes full date with weekday.</p>
-      </div>
-      <div class="feature-card">
-        <h3>📅 Past Day Items</h3>
-        <p>Show date, total usage, and percentage change compared to the previous day.</p>
-      </div>
-      <div class="feature-card">
-        <h3>📈 Change Badges</h3>
-        <p>Green for increase, Red for decrease, Gray for "N/A" when no comparison is available.</p>
-      </div>
-      <div class="feature-card">
-        <h3>🔢 Auto Formatting</h3>
-        <p>Usage is displayed in B, KB, MB, or GB automatically.</p>
-      </div>
-      <div class="feature-card">
-        <h3>💾 Data Storage</h3>
-        <p>History is saved in SharedPreferences for long-term persistence.</p>
-      </div>
-      <div class="feature-card">
-        <h3>🔁 Persistence</h3>
-        <p>Data survives app restarts and device reboots.</p>
-      </div>
-      <div class="feature-card">
-        <h3>⏱️ Auto-Save</h3>
-        <p>Usage is saved every 60 seconds and at midnight daily.</p>
+  <!-- ============== STATS (INVERTED) ============== -->
+  <section class="relative bg-[var(--foreground)] text-white py-20 sm:py-28 overflow-hidden">
+    <div class="absolute inset-0 dot-pattern opacity-[0.05]"></div>
+    <div class="glow-orb w-[500px] h-[500px] bg-[var(--accent)] opacity-[0.08] -top-40 left-1/4"></div>
+
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 relative">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
+        <div class="reveal text-center lg:text-left">
+          <div class="font-display text-5xl sm:text-6xl gradient-text leading-none">60</div>
+          <div class="mt-3 font-mono text-xs uppercase tracking-[0.15em] text-white/50">Days of History</div>
+          <p class="mt-2 text-sm text-white/70">Each data card opens a 60-day usage log.</p>
+        </div>
+        <div class="reveal text-center lg:text-left" style="transition-delay: 0.1s;">
+          <div class="font-display text-5xl sm:text-6xl gradient-text leading-none">v2.0</div>
+          <div class="mt-3 font-mono text-xs uppercase tracking-[0.15em] text-white/50">Major Release</div>
+          <p class="mt-2 text-sm text-white/70">Complete UI overhaul from the ground up.</p>
+        </div>
+        <div class="reveal text-center lg:text-left" style="transition-delay: 0.2s;">
+          <div class="font-display text-5xl sm:text-6xl gradient-text leading-none">60s</div>
+          <div class="mt-3 font-mono text-xs uppercase tracking-[0.15em] text-white/50">Auto-Save Cycle</div>
+          <p class="mt-2 text-sm text-white/70">Usage saved every minute & on service stop.</p>
+        </div>
+        <div class="reveal text-center lg:text-left" style="transition-delay: 0.3s;">
+          <div class="font-display text-5xl sm:text-6xl gradient-text leading-none">2</div>
+          <div class="mt-3 font-mono text-xs uppercase tracking-[0.15em] text-white/50">Light & Dark</div>
+          <p class="mt-2 text-sm text-white/70">Full theme support with auto-follow system.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="screenshots">
-  <section id="screenshots">
-    <h2>App Screenshots</h2>
-    <div class="gallery">
-      <img src="assets/screenshot1.jpg" alt="App Screenshot 1" />
-      <img src="assets/screenshot2.jpg" alt="App Screenshot 2" />
-      <img src="assets/screenshot3.jpg" alt="App Screenshot 3" />
+  <!-- ============== WHAT'S NEW ============== -->
+  <section id="whats-new" class="py-24 sm:py-32">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl mb-14 reveal">
+        <div class="inline-flex items-center gap-3 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-5 py-2 mb-6">
+          <span class="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse-dot"></span>
+          <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">What's New in v2.0</span>
+        </div>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.1] tracking-tight">
+          The <span class="gradient-text">redesign</span> update.
+        </h2>
+        <p class="mt-5 text-lg text-[var(--muted-foreground)]">A major release featuring a complete UI overhaul, persistent data history, a dynamic status bar icon, and a host of new settings.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <!-- Card 1 -->
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-7 shadow-card">
+          <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+            <i class="fas fa-palette text-white"></i>
+          </div>
+          <h3 class="font-semibold text-lg tracking-tight">Complete UI Redesign</h3>
+          <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">A modern, card-based interface that fully supports both Light and Dark modes.</p>
+        </div>
+
+        <!-- Card 2 (Featured with gradient border) -->
+        <div class="reveal gradient-border rounded-2xl shadow-accent-lg" style="transition-delay: 0.1s;">
+          <div class="h-full w-full rounded-[14px] bg-[var(--card)] p-7">
+            <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+              <i class="fas fa-tachometer-alt text-white"></i>
+            </div>
+            <h3 class="font-semibold text-lg tracking-tight">Dynamic Status Bar Icon</h3>
+            <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">The static notification icon is replaced with a text-based icon showing your live download speed directly in the status bar.</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-7 shadow-card" style="transition-delay: 0.2s;">
+          <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+            <i class="fas fa-chart-line text-white"></i>
+          </div>
+          <h3 class="font-semibold text-lg tracking-tight">Data History</h3>
+          <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">Each data card is now clickable, opening a screen that shows your last 60 days of usage history.</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-7 shadow-card">
+          <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+            <i class="fas fa-sliders-h text-white"></i>
+          </div>
+          <h3 class="font-semibold text-lg tracking-tight">Expanded Settings</h3>
+          <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">A new settings screen gives you full control over the app's theme, units, and notifications.</p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-7 shadow-card" style="transition-delay: 0.1s;">
+          <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+            <i class="fas fa-bell text-white"></i>
+          </div>
+          <h3 class="font-semibold text-lg tracking-tight">Data Limit Reminders</h3>
+          <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">Set data limits for both Mobile and WiFi to receive alerts when you approach your cap.</p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-7 shadow-card" style="transition-delay: 0.2s;">
+          <div class="w-12 h-12 rounded-xl icon-tile flex items-center justify-center mb-5">
+            <i class="fas fa-database text-white"></i>
+          </div>
+          <h3 class="font-semibold text-lg tracking-tight">Persistent Data</h3>
+          <p class="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">All data usage is now saved, surviving app restarts and phone reboots.</p>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <footer>
-    &copy; 2025 - 2030 NetPulse. Crafted with care by Nilay Naha.
+  <!-- ============== SCREENSHOTS ============== -->
+  <section id="screenshots" class="py-24 sm:py-32 bg-[var(--muted)]/40 border-y border-[var(--border)]">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <div class="inline-flex items-center gap-3 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-5 py-2 mb-6">
+          <span class="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse-dot"></span>
+          <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">App Screenshots</span>
+        </div>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.1] tracking-tight">
+          Designed for <span class="gradient-text">clarity.</span>
+        </h2>
+        <p class="mt-5 text-lg text-[var(--muted-foreground)]">A clean, single-column layout with side-by-side speed cards, live status, and clickable data history.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 lg:gap-8">
+
+        <!-- Screenshot 1 -->
+        <div class="reveal group">
+          <div class="phone-frame mx-auto max-w-[280px] transition-transform duration-300 group-hover:-translate-y-2">
+            <div class="phone-screen aspect-[9/19]">
+              <img src="assets/screenshot1.jpg" alt="Home Screen" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex','items-center','justify-center','bg-gradient-to-br','from-[var(--accent)]/10','to-[var(--accent-secondary)]/10'); this.parentElement.innerHTML='<div class=\'text-center p-6\'><i class=\'fas fa-home text-4xl text-[var(--accent)] mb-3\'></i><div class=\'font-display text-xl\'>Home Screen</div><div class=\'text-xs text-[var(--muted-foreground)] mt-1\'>Date, Speed & Data cards</div></div>'" />
+            </div>
+          </div>
+          <div class="mt-5 text-center">
+            <div class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">01 · Home</div>
+            <h3 class="font-display text-xl mt-1">Live Dashboard</h3>
+            <p class="text-sm text-[var(--muted-foreground)] mt-1">Real-time speeds & daily usage.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 2 -->
+        <div class="reveal group" style="transition-delay: 0.1s;">
+          <div class="phone-frame mx-auto max-w-[280px] transition-transform duration-300 group-hover:-translate-y-2 sm:translate-y-6">
+            <div class="phone-screen aspect-[9/19]">
+              <img src="assets/screenshot2.jpg" alt="Data History" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex','items-center','justify-center','bg-gradient-to-br','from-[var(--accent)]/10','to-[var(--accent-secondary)]/10'); this.parentElement.innerHTML='<div class=\'text-center p-6\'><i class=\'fas fa-chart-line text-4xl text-[var(--accent)] mb-3\'></i><div class=\'font-display text-xl\'>Data History</div><div class=\'text-xs text-[var(--muted-foreground)] mt-1\'>60-day usage with trend badges</div></div>'" />
+            </div>
+          </div>
+          <div class="mt-5 text-center">
+            <div class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">02 · History</div>
+            <h3 class="font-display text-xl mt-1">60-Day Log</h3>
+            <p class="text-sm text-[var(--muted-foreground)] mt-1">Trend badges & percentage changes.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 3 -->
+        <div class="reveal group" style="transition-delay: 0.2s;">
+          <div class="phone-frame mx-auto max-w-[280px] transition-transform duration-300 group-hover:-translate-y-2">
+            <div class="phone-screen aspect-[9/19]">
+              <img src="assets/screenshot3.jpg" alt="Settings" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex','items-center','justify-center','bg-gradient-to-br','from-[var(--accent)]/10','to-[var(--accent-secondary)]/10'); this.parentElement.innerHTML='<div class=\'text-center p-6\'><i class=\'fas fa-cog text-4xl text-[var(--accent)] mb-3\'></i><div class=\'font-display text-xl\'>Settings</div><div class=\'text-xs text-[var(--muted-foreground)] mt-1\'>Theme, units & data limits</div></div>'" />
+            </div>
+          </div>
+          <div class="mt-5 text-center">
+            <div class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">03 · Settings</div>
+            <h3 class="font-display text-xl mt-1">Full Control</h3>
+            <p class="text-sm text-[var(--muted-foreground)] mt-1">Theme, units, limits & actions.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== CORE FEATURES (Data History) ============== -->
+  <section id="features" class="py-24 sm:py-32">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl mb-14 reveal">
+        <div class="inline-flex items-center gap-3 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-5 py-2 mb-6">
+          <span class="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse-dot"></span>
+          <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent)]">Core Features</span>
+        </div>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.1] tracking-tight">
+          Every detail, <span class="gradient-text">engineered.</span>
+        </h2>
+        <p class="mt-5 text-lg text-[var(--muted-foreground)]">From dynamic titles to persistent storage, every piece of the data history system is built to be reliable and intuitive.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-heading text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Dynamic Title</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Header updates based on the data type being viewed (e.g., "Mobile Data History").</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.05s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Back Arrow</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Quick navigation back to the home screen with a built-in back icon.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.1s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-list text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Scrollable List</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Displays the last 60 days of data in reverse chronological order.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-ban text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Empty State</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Shows "No history data available" if no records exist.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.05s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-calendar-day text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Today Item</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Always appears first, updates in real-time, with full date including weekday.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.1s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-calendar-alt text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Past Day Items</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Show date, total usage, and percentage change compared to the previous day.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-percentage text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Change Badges</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Green for increase, red for decrease, gray for "N/A" when no comparison is available.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.05s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-magic text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Auto Formatting</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Usage is displayed in B, KB, MB, or GB automatically.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.1s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-save text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Data Storage</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">History is saved in SharedPreferences for long-term persistence.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-redo text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Persistence</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Data survives app restarts and device reboots.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal feature-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-card" style="transition-delay: 0.05s;">
+          <div class="flex items-start gap-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl icon-tile flex items-center justify-center text-white">
+              <i class="fas fa-clock text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold tracking-tight">Auto-Save</h3>
+              <p class="mt-1 text-sm text-[var(--muted-foreground)]">Usage is saved every 60 seconds and at midnight daily.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Asymmetric accent card -->
+        <div class="reveal rounded-2xl p-6 gradient-bg-diag text-white shadow-accent-lg flex flex-col justify-between min-h-[140px]" style="transition-delay: 0.1s;">
+          <i class="fas fa-stopwatch text-2xl text-white/80"></i>
+          <div>
+            <h3 class="font-display text-2xl leading-tight">Auto Daily Reset</h3>
+            <p class="mt-1 text-sm text-white/80">Counters reset to zero at midnight, every day.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FINAL CTA (INVERTED) ============== -->
+  <section class="relative bg-[var(--foreground)] text-white py-28 sm:py-36 overflow-hidden">
+    <div class="absolute inset-0 dot-pattern opacity-[0.04]"></div>
+    <div class="glow-orb w-[500px] h-[500px] bg-[var(--accent)] opacity-[0.10] -bottom-40 -right-20"></div>
+    <div class="glow-orb w-[400px] h-[400px] bg-[var(--accent-secondary)] opacity-[0.06] -top-40 -left-20"></div>
+
+    <div class="max-w-4xl mx-auto px-5 sm:px-8 relative text-center">
+      <div class="reveal">
+        <div class="inline-flex items-center gap-3 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-5 py-2 mb-7">
+          <span class="h-2 w-2 rounded-full bg-[var(--accent-secondary)] animate-pulse-dot"></span>
+          <span class="font-mono text-xs uppercase tracking-[0.15em] text-[var(--accent-secondary)]">Get Started</span>
+        </div>
+
+        <h2 class="font-display text-4xl sm:text-6xl leading-[1.05] tracking-tight">
+          Ready to take<br>
+          <span class="gradient-text">control of your speed?</span>
+        </h2>
+
+        <p class="mt-7 text-lg text-white/70 max-w-xl mx-auto">
+          Download NetPulse v2.0 today and experience the next generation of internet speed monitoring — real-time analytics, elegant dashboards, and seamless tracking, all in one sleek app.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+          <button onclick="downloadFile()" class="btn-primary group inline-flex items-center justify-center gap-2.5 px-8 h-14 rounded-xl text-base font-semibold">
+            <i class="fas fa-download"></i>
+            <span>Download APK</span>
+            <i class="fas fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
+          </button>
+          <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter" target="_blank" class="inline-flex items-center justify-center gap-2.5 px-8 h-14 rounded-xl text-base font-semibold border border-white/15 bg-white/5 hover:bg-white/10 transition-all">
+            <i class="fab fa-github"></i>
+            <span>View on GitHub</span>
+          </a>
+        </div>
+
+        <p class="mt-6 font-mono text-xs uppercase tracking-[0.15em] text-white/40">Version 2.0 · Free Download · Android</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FOOTER ============== -->
+  <footer class="bg-[var(--foreground)] text-white/60 border-t border-white/10">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-12">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+            <i class="fas fa-bolt text-white text-xs"></i>
+          </span>
+          <span class="font-display text-lg text-white">NetPulse</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/AmiNilay" target="_blank" title="GitHub" class="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:text-[var(--accent-secondary)] hover:border-[var(--accent)]/30 transition-all">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://x.com/naha_nilay" target="_blank" title="Twitter" class="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:text-[var(--accent-secondary)] hover:border-[var(--accent)]/30 transition-all">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/nilay-naha" target="_blank" title="LinkedIn" class="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:text-[var(--accent-secondary)] hover:border-[var(--accent)]/30 transition-all">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://www.instagram.com/nilaynaha2003" target="_blank" title="Instagram" class="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:text-[var(--accent-secondary)] hover:border-[var(--accent)]/30 transition-all">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-white/10 text-center text-sm">
+        &copy; 2025 - 2030 NetPulse. Crafted with care by <a href="https://github.com/AmiNilay" target="_blank" class="text-white hover:text-[var(--accent-secondary)] transition-colors font-medium">Nilay Naha</a>.
+      </div>
+    </div>
   </footer>
 
   <script>
+    // Download APK
     function downloadFile() {
       const link = document.createElement('a');
       link.href = 'https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.0/NetPulse.apk';
@@ -288,6 +823,37 @@
       link.click();
       document.body.removeChild(link);
     }
+
+    // Scroll reveal animations
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // Mobile menu close on click
+    document.querySelectorAll('#mobile-menu a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    });
+
+    // Nav background opacity on scroll
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        nav.classList.add('shadow-sm');
+      } else {
+        nav.classList.remove('shadow-sm');
+      }
+    });
   </script>
+
 </body>
 </html>
