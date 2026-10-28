@@ -4,10 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NetPulse</title>
-  <meta name="description" content="High-precision, modern minimalist internet speed monitor and diagnostic suite for Android. Silent status bar indicator, per-app telemetry, bufferbloat radar, and Wi-Fi dead-zone mapping." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta name="description" content="High-precision, modern minimalist internet speed monitor and diagnostic suite for Android. Inline status bar speed, VPN awareness, live per-app telemetry, bufferbloat radar, and Wi-Fi dead-zone mapping." />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0E1215" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- Apply the saved theme before first paint to avoid a light/dark flash -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('netpulse_web_theme'); } catch (e) {}
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <style>
     /* ==========================================================================
        DESIGN SYSTEM & COLOR TOKENS (DESIGN_SYSTEM.md)
@@ -68,7 +77,7 @@
     }
 
     body {
-      font-family: system-ui, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       background-color: var(--canvas-bg);
       color: var(--text-primary);
       line-height: 1.5;
@@ -121,6 +130,97 @@
     section {
       padding: 5.5rem 0;
       position: relative;
+    }
+
+    /* Skip layout/paint of off-screen sections until they scroll near the viewport */
+    #features, #diagnostics, #screenshots, #faq, #download {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 900px;
+    }
+
+    /* ==========================================================================
+       WHAT'S NEW (v2.6) & STATUS BAR PREVIEW
+       ========================================================================== */
+    .whats-new-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .whats-new-item {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 1.25rem;
+    }
+
+    .whats-new-icon {
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: var(--pill-cream-bg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-coral);
+    }
+
+    .whats-new-item h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .whats-new-item p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .statusbar-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--pill-dark-bg);
+      color: var(--pill-dark-text);
+      border-radius: 999px;
+      padding: 0.6rem 1.1rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .statusbar-speed {
+      font-stretch: condensed;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .statusbar-speed small {
+      font-size: 0.72em;
+      margin-left: 1px;
+    }
+
+    .statusbar-spacer { flex: 1; }
+
+    .vpn-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: var(--pill-cream-bg);
+      color: var(--text-primary);
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+    }
+
+    .statusbar-hint {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
     }
 
     /* ==========================================================================
@@ -561,7 +661,7 @@
       background: var(--card-surface);
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all var(--duration-press) var(--ease-out);
+      transition: transform var(--duration-press) var(--ease-out), background-color var(--duration-press) var(--ease-out), color var(--duration-press) var(--ease-out);
     }
 
     .suite-tab-btn:active {
@@ -937,7 +1037,7 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#overview">Overview</a></li>
+        <li><a href="#whats-new">What's New</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#diagnostics">Diagnostics</a></li>
         <li><a href="#screenshots">Screenshots</a></li>
@@ -961,7 +1061,7 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/V2.5/NetPulse.apk" class="btn btn-dark" download="NetPulse.apk">
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-dark" download="NetPulse-v2.6.apk">
           Download APK
         </a>
       </div>
@@ -973,7 +1073,7 @@
     <div class="container">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        <span>Version 2.5 • Neo-Minimalist</span>
+        <span>Version 2.6 • Always-On &amp; VPN-Aware</span>
       </div>
 
       <h1 class="display-large">
@@ -985,7 +1085,7 @@
       </p>
 
       <div class="hero-ctas">
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/V2.5/NetPulse.apk" class="btn btn-dark" download="NetPulse.apk">
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-dark" download="NetPulse-v2.6.apk">
           Download Release APK
         </a>
         <a href="https://github.com/AmiNilay" target="_blank" class="btn btn-cream">
@@ -1007,8 +1107,17 @@
           </div>
         </div>
 
+        <!-- Mirrors the app's status bar: clock, then speed with the unit inline -->
+        <div class="statusbar-preview" aria-label="Status bar preview">
+          <span>9:41</span>
+          <span class="statusbar-speed" id="demoStatusSpeed">48<small>MB</small></span>
+          <span class="vpn-badge">VPN</span>
+          <span class="statusbar-spacer"></span>
+          <span class="statusbar-hint">STATUS BAR</span>
+        </div>
+
         <div class="gauge-wrapper">
-          <canvas id="webSpeedGauge" width="560" height="380"></canvas>
+          <canvas id="webSpeedGauge" width="560" height="380" role="img" aria-label="Animated speed gauge demo"></canvas>
         </div>
 
         <div class="preview-pods">
@@ -1017,12 +1126,12 @@
             <div class="pod-value" id="demoTodayData">1.84 GB</div>
           </div>
           <div class="preview-pod">
-            <div class="pod-label">STABILITY SCORE</div>
-            <div class="pod-value" style="color: var(--accent-emerald);">99.9%</div>
+            <div class="pod-label">NETPULSE OWN DATA</div>
+            <div class="pod-value" id="demoAppData">340 KB</div>
           </div>
           <div class="preview-pod">
-            <div class="pod-label">STATUS BAR MODE</div>
-            <div class="pod-value">Auto (Highest)</div>
+            <div class="pod-label">STABILITY SCORE</div>
+            <div class="pod-value" style="color: var(--accent-emerald);">99.9%</div>
           </div>
         </div>
       </div>
@@ -1044,6 +1153,85 @@
         <div class="spec-item">
           <span class="spec-check"></span>
           <span>Battery Consumption &lt; 1%</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-check"></span>
+          <span>Survives Reboots &amp; Swipes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's New in 2.6 -->
+  <section id="whats-new">
+    <div class="container">
+      <div style="text-align: center;">
+        <span class="card-tag">WHAT'S NEW • VERSION 2.6</span>
+        <h2 class="section-title">Sharper, Smarter, Always On</h2>
+        <p class="section-subtitle">
+          The biggest reliability and clarity update yet, refined from real-world feedback.
+        </p>
+      </div>
+
+      <div class="whats-new-grid">
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </span>
+          <div>
+            <h3>Bigger Status Bar Speed</h3>
+            <p>Live speed beside the clock is larger and crisp, with the unit inline: 12MB, 850KB. No more stacked, tiny text.</p>
+          </div>
+        </div>
+
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <div>
+            <h3>VPN Awareness</h3>
+            <p>A VPN badge appears in the notification whenever any VPN is connected, and the real Wi-Fi or mobile link underneath is still detected.</p>
+          </div>
+        </div>
+
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+          </span>
+          <div>
+            <h3>NetPulse's Own Data, Live</h3>
+            <p>The notification shows exactly how much data NetPulse itself has used and its live speed. Full transparency.</p>
+          </div>
+        </div>
+
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          </span>
+          <div>
+            <h3>Always-On Monitoring</h3>
+            <p>The meter restarts itself after a reboot, an app update, or a swipe from Recents, with a one-time battery-optimization exemption.</p>
+          </div>
+        </div>
+
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+          </span>
+          <div>
+            <h3>Real Hourly &amp; Weekly Charts</h3>
+            <p>Usage history now lives in a fast on-device database, recording real traffic per hour for accurate daily and weekly analysis.</p>
+          </div>
+        </div>
+
+        <div class="whats-new-item">
+          <span class="whats-new-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          </span>
+          <div>
+            <h3>Refreshed Settings</h3>
+            <p>A new card-based theme picker, a redesigned notification sheet with live status bar preview, and a What's New screen on every update.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1067,7 +1255,7 @@
             <span class="card-tag">STATUS BAR TELEMETRY</span>
             <h3>Silent Status Bar Meter</h3>
             <p>
-              Displays live download and upload speed directly in the Android status bar. Operates on a dedicated silent channel with zero intrusive heads-up popups over games or video apps.
+              Displays live speed right beside the clock, number and unit on one line (12MB, 850KB). Operates on a dedicated silent channel with zero intrusive heads-up popups over games or video apps.
             </p>
           </div>
         </div>
@@ -1562,7 +1750,7 @@
         <!-- Device 1: Live Dashboard -->
         <div class="device-slot">
           <div class="device-screen-container">
-            <img src="assets/Home%20Screen.jpeg" alt="NetPulse Speedometer Dashboard" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="assets/Home%20Screen.jpeg" alt="NetPulse Speedometer Dashboard" loading="lazy" decoding="async" width="720" height="1280" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="placeholder-frame" style="display: none;">
               <span>Speedometer Dashboard</span>
               <span style="font-size: 0.78rem; font-weight: 400; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -1577,7 +1765,7 @@
         <!-- Device 2: Per-App Usage -->
         <div class="device-slot">
           <div class="device-screen-container">
-            <img src="assets/Per-App%20Data%20Usage%20Screen.jpeg" alt="NetPulse Per-App Data Usage Audit" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="assets/Per-App%20Data%20Usage%20Screen.jpeg" alt="NetPulse Per-App Data Usage Audit" loading="lazy" decoding="async" width="720" height="1280" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="placeholder-frame" style="display: none;">
               <span>Per-App Usage</span>
               <span style="font-size: 0.78rem; font-weight: 400; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -1592,7 +1780,7 @@
         <!-- Device 3: Usage History -->
         <div class="device-slot">
           <div class="device-screen-container">
-            <img src="assets/Usage%20History%20Screen.jpeg" alt="NetPulse Historical Analysis" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="assets/Usage%20History%20Screen.jpeg" alt="NetPulse Historical Analysis" loading="lazy" decoding="async" width="720" height="1280" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="placeholder-frame" style="display: none;">
               <span>Historical Telemetry</span>
               <span style="font-size: 0.78rem; font-weight: 400; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -1607,7 +1795,7 @@
         <!-- Device 4: Network Diagnostics -->
         <div class="device-slot">
           <div class="device-screen-container">
-            <img src="assets/Network%20Usage%20Screen.jpeg" alt="NetPulse Pro Diagnostics" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="assets/Network%20Usage%20Screen.jpeg" alt="NetPulse Pro Diagnostics" loading="lazy" decoding="async" width="720" height="1280" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="placeholder-frame" style="display: none;">
               <span>Diagnostic Center</span>
               <span style="font-size: 0.78rem; font-weight: 400; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -1622,7 +1810,7 @@
         <!-- Device 5: Precision Settings -->
         <div class="device-slot">
           <div class="device-screen-container">
-            <img src="assets/Setting%20Screen.jpeg" alt="NetPulse Precision Settings and Controls" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="assets/Setting%20Screen.jpeg" alt="NetPulse Precision Settings and Controls" loading="lazy" decoding="async" width="720" height="1280" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="placeholder-frame" style="display: none;">
               <span>System Settings</span>
               <span style="font-size: 0.78rem; font-weight: 400; color: var(--text-secondary); margin-top: 0.5rem;">
@@ -1666,6 +1854,26 @@
           </button>
           <div class="faq-content">
             Yes. In the Notification &amp; Alerts settings sheet, you can select whether the status bar speed text reflects Download speed, Upload speed, or Auto (which dynamically picks whichever metric is currently higher).
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <span>Why did the speed meter stop in the background, and is that fixed?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-content">
+            Version 2.6 fixes it. The service now recovers when Android restarts it, comes back after a reboot or app update, and restarts if swiped from Recents. On first launch NetPulse asks once to be excluded from battery optimization. Some brands (Xiaomi, Oppo, Vivo, Samsung) also have an "Autostart" or "Never sleeping apps" switch you may need to enable.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <span>Does NetPulse work when a VPN is on?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-content">
+            Yes. NetPulse detects any active VPN (WireGuard, OpenVPN, ad-blockers using VpnService and more), shows a VPN badge in the notification, and still reports the real Wi-Fi or mobile connection underneath.
           </div>
         </div>
 
@@ -1740,8 +1948,8 @@
         <p>
           Download the latest signed release APK directly to your Android device. Fast, private, and beautifully minimal.
         </p>
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/V2.5/NetPulse.apk" class="btn btn-cream" download="NetPulse.apk">
-          Download NetPulse.apk (v2.5)
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-cream" download="NetPulse-v2.6.apk">
+          Download NetPulse-v2.6.apk
         </a>
       </div>
     </div>
@@ -1774,38 +1982,29 @@
   <!-- Interactive Scripts & Gauge Simulator -->
   <script>
     // =========================================================================
-    // FLOATING BACK TO TOP CONTROLLER (INDEPENDENT IIFE)
+    // FLOATING BACK TO TOP CONTROLLER
+    // Uses an IntersectionObserver on a sentinel instead of scroll listeners.
     // =========================================================================
     (function initBackToTop() {
       const btn = document.getElementById('backToTop');
       if (!btn) return;
 
-      function checkScroll() {
-        const top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-        if (top > 160) {
-          btn.classList.add('visible');
-        } else {
-          btn.classList.remove('visible');
-        }
-      }
+      const sentinel = document.createElement('div');
+      sentinel.style.cssText = 'position:absolute;top:160px;left:0;width:1px;height:1px;pointer-events:none;';
+      document.body.prepend(sentinel);
 
-      window.addEventListener('scroll', checkScroll, { passive: true });
-      window.addEventListener('resize', checkScroll, { passive: true });
-      document.addEventListener('scroll', checkScroll, { passive: true });
-      checkScroll();
+      new IntersectionObserver(([entry]) => {
+        btn.classList.toggle('visible', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      }).observe(sentinel);
 
-      btn.addEventListener('click', function(e) {
+      btn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       });
     })();
 
     // =========================================================================
-    // CANVAS & GAUGE SETUP (DECLARED BEFORE THEME APPLICATION)
+    // CANVAS & GAUGE SETUP
     // =========================================================================
     const canvas = document.getElementById('webSpeedGauge');
     const ctx = canvas ? canvas.getContext('2d') : null;
@@ -1814,6 +2013,10 @@
     let targetSpeed = 48.6;
     let currentAnimatedSpeed = 0.0;
     const maxSpeed = 100.0;
+
+    // The gauge only animates while visible on screen and while the tab is in front
+    let gaugeVisible = true;
+    let rafId = 0;
 
     function setDemoMode(isDownload) {
       isDownloadMode = isDownload;
@@ -1824,39 +2027,26 @@
       targetSpeed = isDownload ? 64.2 : 28.4;
       const demoData = document.getElementById('demoTodayData');
       if (demoData) demoData.textContent = isDownload ? '1.84 GB' : '412 MB';
+      startGauge();
     }
 
     // =========================================================================
-    // THEME CONTROLLER (SYNCED WITH SYSTEM PREFERS-COLOR-SCHEME)
+    // THEME CONTROLLER (initial theme is applied in <head> before first paint)
     // =========================================================================
     const themeToggleBtn = document.getElementById('themeToggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-
-    function getInitialTheme() {
-      const stored = localStorage.getItem('netpulse_web_theme');
-      if (stored) return stored;
-      return prefersDarkScheme.matches ? 'dark' : 'light';
-    }
 
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('netpulse_web_theme', theme);
+      try { localStorage.setItem('netpulse_web_theme', theme); } catch (e) {}
       const iconSun = document.getElementById('themeIconSun');
       const iconMoon = document.getElementById('themeIconMoon');
       if (iconSun && iconMoon && themeToggleBtn) {
-        if (theme === 'dark') {
-          iconSun.style.display = 'block';
-          iconMoon.style.display = 'none';
-          themeToggleBtn.title = 'Switch to Light Mode';
-        } else {
-          iconSun.style.display = 'none';
-          iconMoon.style.display = 'block';
-          themeToggleBtn.title = 'Switch to Dark Mode';
-        }
+        const dark = theme === 'dark';
+        iconSun.style.display = dark ? 'block' : 'none';
+        iconMoon.style.display = dark ? 'none' : 'block';
+        themeToggleBtn.title = dark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
       }
-      if (typeof drawGauge === 'function') {
-        drawGauge();
-      }
+      drawGauge();
     }
 
     if (themeToggleBtn) {
@@ -1866,15 +2056,20 @@
       });
     }
 
-    // Apply theme safely
-    applyTheme(getInitialTheme());
-
-    // Smooth speed modulation simulation
+    // Smooth speed modulation simulation (paused while the gauge is off-screen)
     setInterval(() => {
+      if (!gaugeVisible || document.hidden) return;
       const jitter = (Math.random() - 0.5) * 8.0;
       const base = isDownloadMode ? 58.0 : 26.0;
       targetSpeed = Math.max(2.0, Math.min(95.0, base + jitter));
+      updateStatusBarDemo();
+      startGauge();
     }, 2200);
+
+    function updateStatusBarDemo() {
+      const el = document.getElementById('demoStatusSpeed');
+      if (el) el.innerHTML = Math.round(targetSpeed) + '<small>MB</small>';
+    }
 
     function drawGauge() {
       if (!canvas || !ctx) return;
@@ -1887,6 +2082,7 @@
       const trackColor = isDark ? '#202A31' : '#F0F1F3';
       const textPrimaryColor = isDark ? '#FFFFFF' : '#111619';
       const textSecondaryColor = isDark ? '#8E98A0' : '#8A919B';
+      const fontStack = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
       const cx = w / 2;
       const cy = h * 0.62;
@@ -1915,7 +2111,7 @@
 
       // 3. Radial Milestone Ticks & Labels
       const milestones = [0, 10, 20, 40, 60, 80, 100];
-      ctx.font = 'bold 16px Inter, sans-serif';
+      ctx.font = 'bold 16px ' + fontStack;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -1925,42 +2121,28 @@
         const tickOuter = radius - 14;
         const textR = radius - 42;
 
-        const x1 = cx + tickInner * Math.cos(angle);
-        const y1 = cy + tickInner * Math.sin(angle);
-        const x2 = cx + tickOuter * Math.cos(angle);
-        const y2 = cy + tickOuter * Math.sin(angle);
-
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(cx + tickInner * Math.cos(angle), cy + tickInner * Math.sin(angle));
+        ctx.lineTo(cx + tickOuter * Math.cos(angle), cy + tickOuter * Math.sin(angle));
         ctx.strokeStyle = trackColor;
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.stroke();
 
-        const tx = cx + textR * Math.cos(angle);
-        const ty = cy + textR * Math.sin(angle);
         ctx.fillStyle = textSecondaryColor;
-        ctx.fillText(m.toString(), tx, ty);
+        ctx.fillText(m.toString(), cx + textR * Math.cos(angle), cy + textR * Math.sin(angle));
       });
 
       // 4. Dynamic Tapered Needle
       const needleAngle = startAngle + progressRatio * sweepAngle;
       const needleLength = radius * 0.76;
-      const tipX = cx + needleLength * Math.cos(needleAngle);
-      const tipY = cy + needleLength * Math.sin(needleAngle);
-
       const perp = needleAngle + Math.PI / 2;
       const baseWidth = 8;
-      const b1x = cx + baseWidth * Math.cos(perp);
-      const b1y = cy + baseWidth * Math.sin(perp);
-      const b2x = cx - baseWidth * Math.cos(perp);
-      const b2y = cy - baseWidth * Math.sin(perp);
 
       ctx.beginPath();
-      ctx.moveTo(tipX, tipY);
-      ctx.lineTo(b1x, b1y);
-      ctx.lineTo(b2x, b2y);
+      ctx.moveTo(cx + needleLength * Math.cos(needleAngle), cy + needleLength * Math.sin(needleAngle));
+      ctx.lineTo(cx + baseWidth * Math.cos(perp), cy + baseWidth * Math.sin(perp));
+      ctx.lineTo(cx - baseWidth * Math.cos(perp), cy - baseWidth * Math.sin(perp));
       ctx.closePath();
       ctx.fillStyle = activeColor;
       ctx.fill();
@@ -1972,34 +2154,50 @@
       ctx.fill();
 
       // Central Digital Speed Readout
-      ctx.font = '800 44px Inter, sans-serif';
+      ctx.font = '800 44px ' + fontStack;
       ctx.fillStyle = textPrimaryColor;
       ctx.fillText(currentAnimatedSpeed.toFixed(1), cx, cy + 62);
 
-      ctx.font = '600 15px Inter, sans-serif';
+      ctx.font = '600 15px ' + fontStack;
       ctx.fillStyle = activeColor;
       ctx.fillText('MB/s', cx, cy + 92);
     }
 
-    // Animation Loop (Spring-like lerp interpolator)
+    // Spring-like lerp; the loop stops by itself once the needle settles
     function animateGauge() {
+      rafId = 0;
       const diff = targetSpeed - currentAnimatedSpeed;
+      if (Math.abs(diff) < 0.01) {
+        currentAnimatedSpeed = targetSpeed;
+        drawGauge();
+        return;
+      }
       currentAnimatedSpeed += diff * 0.08;
       drawGauge();
-      requestAnimationFrame(animateGauge);
+      if (gaugeVisible && !document.hidden) rafId = requestAnimationFrame(animateGauge);
     }
 
-    requestAnimationFrame(animateGauge);
+    function startGauge() {
+      if (!rafId && gaugeVisible && !document.hidden) rafId = requestAnimationFrame(animateGauge);
+    }
+
+    if (canvas) {
+      new IntersectionObserver(([entry]) => {
+        gaugeVisible = entry.isIntersecting;
+        if (gaugeVisible) startGauge();
+      }).observe(canvas);
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) startGauge(); });
+
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
+    startGauge();
 
     // =========================================================================
     // PRO SUITE TABS CONTROLLER
     // =========================================================================
     function showSuiteTab(index) {
-      const buttons = document.querySelectorAll('.suite-tab-btn');
-      const panes = document.querySelectorAll('.suite-pane');
-
-      buttons.forEach((btn, i) => btn.classList.toggle('active', i === index));
-      panes.forEach((pane, i) => pane.classList.toggle('active', i === index));
+      document.querySelectorAll('.suite-tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === index));
+      document.querySelectorAll('.suite-pane').forEach((pane, i) => pane.classList.toggle('active', i === index));
     }
 
     // =========================================================================
@@ -2007,25 +2205,8 @@
     // =========================================================================
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
-      item.classList.toggle('open');
-    }
-
-    // =========================================================================
-    // APK DOWNLOAD HANDLER
-    // =========================================================================
-    function downloadApk() {
-      // Direct release APK download link
-      const downloadUrl = 'https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/V2.5/NetPulse.apk';
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = 'NetPulse.apk';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      // Fallback direct navigation
-      setTimeout(() => {
-        window.location.href = downloadUrl;
-      }, 150);
+      const open = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
   </script>
 </body>
