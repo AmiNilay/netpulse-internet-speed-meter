@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NetPulse</title>
-  <meta name="description" content="High-precision, modern minimalist internet speed monitor and diagnostic suite for Android. Inline status bar speed, VPN awareness, live per-app telemetry, bufferbloat radar, and Wi-Fi dead-zone mapping." />
+  <meta name="description" content="High-precision, modern minimalist internet speed monitor and diagnostic suite for Android. Ultra-large status bar speed, pitch-black OLED dark mode, Plus Jakarta Sans typography, dedicated Wi-Fi network hub, VPN awareness, and live telemetry." />
   <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0E1215" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
   <meta name="color-scheme" content="light dark" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
   <!-- Apply the saved theme before first paint to avoid a light/dark flash -->
   <script>
     (function () {
@@ -51,17 +54,17 @@
       --accent-coral: #FF7565;
       --accent-coral-light: #2A1614;
       --accent-emerald: #30D158;
-      --canvas-bg: #0E1215;
-      --canvas-cream: #12171B;
-      --card-surface: #161D22;
-      --card-border: #202A31;
-      --pill-cream-bg: #1E252B;
-      --segmented-bg: #1B2329;
+      --canvas-bg: #000000;
+      --canvas-cream: #05080A;
+      --card-surface: #0A0D10;
+      --card-border: #1A2027;
+      --pill-cream-bg: #12181F;
+      --segmented-bg: #141B22;
       --text-primary: #FFFFFF;
       --text-secondary: #8E98A0;
       --text-hint: #58636C;
       --pill-dark-bg: #FFFFFF;
-      --pill-dark-text: #0E1215;
+      --pill-dark-text: #000000;
     }
 
     /* Reset & Base Setup */
@@ -77,7 +80,7 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       background-color: var(--canvas-bg);
       color: var(--text-primary);
       line-height: 1.5;
@@ -139,7 +142,7 @@
     }
 
     /* ==========================================================================
-       WHAT'S NEW (v2.6) & STATUS BAR PREVIEW
+       WHAT'S NEW (v2.9) & STATUS BAR PREVIEW
        ========================================================================== */
     .whats-new-grid {
       display: grid;
@@ -192,6 +195,33 @@
       font-weight: 700;
       font-size: 0.95rem;
       margin-bottom: 1.25rem;
+    }
+
+    .statusbar-stacked-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+      font-weight: 800;
+      padding: 0 4px;
+    }
+
+    .statusbar-stacked-badge .num {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .statusbar-stacked-badge .unit {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-top: 1px;
+      line-height: 1;
     }
 
     .statusbar-speed {
@@ -1061,7 +1091,7 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-dark" download="NetPulse-v2.6.apk">
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk" class="btn btn-dark" download="NetPulse-v2.9.apk">
           Download APK
         </a>
       </div>
@@ -1073,7 +1103,7 @@
     <div class="container">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        <span>Version 2.6 • Always-On &amp; VPN-Aware</span>
+        <span>Version 2.9 • True Pitch Black OLED &amp; Plus Jakarta Sans</span>
       </div>
 
       <h1 class="display-large">
@@ -1081,12 +1111,12 @@
       </h1>
 
       <p class="lead">
-        The high-precision, privacy-first internet speed meter and network diagnostics suite for Android. Engineered with silent background telemetry, jitter radar, and room coverage mapping.
+        The high-precision, privacy-first internet speed meter and network diagnostics suite for Android. Engineered with silent background telemetry, jitter radar, true OLED pitch black canvas, and dedicated Wi-Fi network analytics.
       </p>
 
       <div class="hero-ctas">
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-dark" download="NetPulse-v2.6.apk">
-          Download Release APK
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk" class="btn btn-dark" download="NetPulse-v2.9.apk">
+          Download Release APK (v2.9)
         </a>
         <a href="https://github.com/AmiNilay" target="_blank" class="btn btn-cream">
           View GitHub Repository
@@ -1107,13 +1137,16 @@
           </div>
         </div>
 
-        <!-- Mirrors the app's status bar: clock, then speed with the unit inline -->
+        <!-- Mirrors the app's status bar: clock, then enlarged 2-tier stacked speed badge -->
         <div class="statusbar-preview" aria-label="Status bar preview">
           <span>9:41</span>
-          <span class="statusbar-speed" id="demoStatusSpeed">48<small>MB</small></span>
+          <div class="statusbar-stacked-badge">
+            <span class="num" id="demoStatusSpeed">48</span>
+            <span class="unit">MB</span>
+          </div>
           <span class="vpn-badge">VPN</span>
           <span class="statusbar-spacer"></span>
-          <span class="statusbar-hint">STATUS BAR</span>
+          <span class="statusbar-hint">STATUS BAR (ENLARGED)</span>
         </div>
 
         <div class="gauge-wrapper">
@@ -1162,14 +1195,14 @@
     </div>
   </section>
 
-  <!-- What's New in 2.6 -->
+  <!-- What's New in 2.9 -->
   <section id="whats-new">
     <div class="container">
       <div style="text-align: center;">
-        <span class="card-tag">WHAT'S NEW • VERSION 2.6</span>
-        <h2 class="section-title">Sharper, Smarter, Always On</h2>
+        <span class="card-tag">WHAT'S NEW • VERSION 2.9</span>
+        <h2 class="section-title">Pitch Black OLED, Plus Jakarta Sans &amp; Wi-Fi Hub</h2>
         <p class="section-subtitle">
-          The biggest reliability and clarity update yet, refined from real-world feedback.
+          True pitch-black AMOLED dark mode, premium geometric typography, full-screen dedicated Wi-Fi analytics, and enlarged high-speed status bar telemetry.
         </p>
       </div>
 
@@ -1179,58 +1212,58 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </span>
           <div>
-            <h3>Bigger Status Bar Speed</h3>
-            <p>Live speed beside the clock is larger and crisp, with the unit inline: 12MB, 850KB. No more stacked, tiny text.</p>
+            <h3>Enlarged Status Bar Speed</h3>
+            <p>High-speed telemetry (&ge; 10 MB/s or &ge; 100 KB/s) is rendered with extra-large bold digits in a 2-tier stacked layout. Digits stay huge and legible without shrinking.</p>
           </div>
         </div>
 
         <div class="whats-new-item">
           <span class="whats-new-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/></svg>
           </span>
           <div>
-            <h3>VPN Awareness</h3>
-            <p>A VPN badge appears in the notification whenever any VPN is connected, and the real Wi-Fi or mobile link underneath is still detected.</p>
+            <h3>Pitch Black OLED Dark Mode</h3>
+            <p>Pure #000000 black canvas across every screen, dialog, widget, and menu for zero AMOLED backlight draw, true power saving, and high-contrast clarity.</p>
           </div>
         </div>
 
         <div class="whats-new-item">
           <span class="whats-new-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
           </span>
           <div>
-            <h3>NetPulse's Own Data, Live</h3>
-            <p>The notification shows exactly how much data NetPulse itself has used and its live speed. Full transparency.</p>
+            <h3>Plus Jakarta Sans Typography</h3>
+            <p>Replaced generic system typefaces with modern geometric Plus Jakarta Sans across all 35+ screens, custom canvas meters, and diagnostic pods.</p>
           </div>
         </div>
 
         <div class="whats-new-item">
           <span class="whats-new-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
           </span>
           <div>
-            <h3>Always-On Monitoring</h3>
-            <p>The meter restarts itself after a reboot, an app update, or a swipe from Recents, with a one-time battery-optimization exemption.</p>
+            <h3>Dedicated Wi-Fi Network Hub</h3>
+            <p>Replaced modal popups with a dedicated full-screen Wi-Fi center featuring sort pills (Most Data, Recent, A–Z), hardware band badges (5 GHz / 6 GHz), and telemetry export.</p>
           </div>
         </div>
 
         <div class="whats-new-item">
           <span class="whats-new-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 16h2"/><path d="M11 12h2"/><path d="M15 8h2"/></svg>
           </span>
           <div>
-            <h3>Real Hourly &amp; Weekly Charts</h3>
-            <p>Usage history now lives in a fast on-device database, recording real traffic per hour for accurate daily and weekly analysis.</p>
+            <h3>Bandwidth Distribution Bar</h3>
+            <p>Interactive multi-segment stacked bar in the Wi-Fi Hub breaking down total bandwidth consumption across your top network SSIDs in real time.</p>
           </div>
         </div>
 
         <div class="whats-new-item">
           <span class="whats-new-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
           </span>
           <div>
-            <h3>Refreshed Settings</h3>
-            <p>A new card-based theme picker, a redesigned notification sheet with live status bar preview, and a What's New screen on every update.</p>
+            <h3>Live Speed Waveform Sparkline</h3>
+            <p>Real-time canvas waveform graph on the home screen tracking live throughput, latency jitter, and bandwidth surges with zero CPU lag.</p>
           </div>
         </div>
       </div>
@@ -1879,6 +1912,26 @@
 
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
+            <span>Why is the status bar speed text so much larger in high-speed downloads?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-content">
+            Version 2.9 introduces a 2-tier stacked icon architecture. Instead of squeezing digits and unit side-by-side onto a single cramped line, digits occupy up to 62% of the icon canvas with unit centered underneath. For speeds &ge; 10 MB/s or &ge; 100 KB/s, numbers remain huge, bold, and readable at arm's length without shrinking.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <span>Is Dark Mode true Pitch Black for AMOLED / OLED displays?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-content">
+            Yes. NetPulse uses an uncompromising true pitch black (#000000) canvas across every single activity, bottom sheet dialog, widget, and menu. On OLED panels, individual pixels turn completely off, achieving zero backlight bleed and maximum battery savings.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
             <span>Does NetPulse collect my browsing history or personal data?</span>
             <span class="faq-chevron">+</span>
           </button>
@@ -1946,10 +1999,10 @@
       <div class="download-card">
         <h2>Experience NetPulse Today</h2>
         <p>
-          Download the latest signed release APK directly to your Android device. Fast, private, and beautifully minimal.
+          Download the latest signed release APK directly to your Android device. Fast, private, true OLED black, and beautifully minimal.
         </p>
-        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/2.6/NetPulse-v2.6.apk" class="btn btn-cream" download="NetPulse-v2.6.apk">
-          Download NetPulse-v2.6.apk
+        <a href="https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk" class="btn btn-cream" download="NetPulse-v2.9.apk">
+          Download NetPulse-v2.9.apk
         </a>
       </div>
     </div>
@@ -2068,7 +2121,7 @@
 
     function updateStatusBarDemo() {
       const el = document.getElementById('demoStatusSpeed');
-      if (el) el.innerHTML = Math.round(targetSpeed) + '<small>MB</small>';
+      if (el) el.textContent = Math.round(targetSpeed);
     }
 
     function drawGauge() {
@@ -2079,10 +2132,10 @@
 
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const activeColor = isDownloadMode ? '#FF6B58' : (isDark ? '#8E98A0' : '#8A919B');
-      const trackColor = isDark ? '#202A31' : '#F0F1F3';
+      const trackColor = isDark ? '#1A2027' : '#F0F1F3';
       const textPrimaryColor = isDark ? '#FFFFFF' : '#111619';
       const textSecondaryColor = isDark ? '#8E98A0' : '#8A919B';
-      const fontStack = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      const fontStack = "'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 
       const cx = w / 2;
       const cy = h * 0.62;

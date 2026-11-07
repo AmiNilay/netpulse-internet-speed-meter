@@ -1,47 +1,62 @@
 # NetPulse / SpeedMeter — Telemetry Suite & Technical Specification
 
-> **Version**: 2.5 (Neo-Minimalist Redesign & Pro Diagnostic Suite)  
+[![Download Latest APK](https://img.shields.io/badge/Download-NetPulse%20v2.9%20APK-111619?style=for-the-badge&logo=android&logoColor=white)](https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk)
+
+> **Version**: 2.9 (Pitch Black OLED, Plus Jakarta Sans & Dedicated Wi-Fi Hub)  
+> **Direct Download**: [**NetPulse-v2.9.apk**](https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk)  
 > **Target Framework**: Native Android (Kotlin / Material 3 / Custom Canvas)  
 > **Minimum SDK**: Android 7.0 (API Level 24) | **Target SDK**: Android 14 (API Level 34)  
-> **Design Language**: Neo-Minimalist (24dp Card Radius, 1dp Hairline Borders, Critically Damped Springs)  
+> **Design Language**: Pitch Black Neo-Minimalist (24dp Card Radius, 1dp Hairline Borders, Plus Jakarta Sans)  
 > **Telemetry Model**: 100% Client-Side On-Device Processing | Zero Cloud Overhead  
+
+---
+
+### 📥 Latest Release Highlights (v2.9)
+* **Direct APK Download**: [**NetPulse-v2.9.apk**](https://github.com/AmiNilay/netpulse-internet-speed-meter/releases/download/v2.9/NetPulse-v2.9.apk) *(5.42 MB, signed production release)*
+* **Enlarged High-Speed Status Bar Telemetry**: New 2-tier stacked speed icon architecture where numbers occupy up to 62% of icon height, ensuring high speeds (15 MB/s, 120 KB/s) stay huge, bold, and readable at a glance without shrinking.
+* **True Pitch Black OLED Dark Mode**: Pure `#000000` canvas across all 35+ screens, bottom sheets, dialogs, and widgets for zero AMOLED backlight draw and maximum battery savings.
+* **Plus Jakarta Sans Typography**: Bespoke geometric typography loaded natively across all layouts, dialogs, speedometer gauges, and diagnostic pods.
+* **Dedicated Full-Screen Wi-Fi Network Hub**: Replaced modal popups with a dedicated full-screen activity featuring sort pills (Most Data, Recent, A–Z), hardware band badges (5 GHz / 6 GHz / 2.4 GHz), link speed, and one-tap CSV telemetry report export.
+* **Interactive Bandwidth Hero Bar**: Multi-segment distribution bar breaking down SSID bandwidth consumption.
+* **Live Speed Waveform Sparkline**: Real-time canvas waveform graph on the home screen tracking throughput and jitter with zero CPU lag.
 
 ---
 
 ## 1. Design Philosophy & Visual Identity
 
-NetPulse follows a **Modern Neo-Minimalist** aesthetic characterized by:
-* **Generous White Space & High Contrast**: Dark charcoal (`#111619`) text on pure white canvas (`#FFFFFF`) in light mode; OLED dark (`#0E1215`) in dark mode.
+NetPulse follows an **Apple-inspired Neo-Minimalist** aesthetic characterized by:
+* **Generous White Space & High Contrast**: Dark charcoal (`#111619`) text on pure white canvas (`#FFFFFF`) in light mode; pure pitch-black OLED (`#000000`) across all screens in dark mode.
 * **Warm Accent Highlights**: Vibrant coral/salmon (`#FF6B58`) for active states and critical alerts; warm ivory/cream (`#F6F4ED`) for secondary pill buttons and badges; emerald green (`#34C759`) for active connection health and fast latency.
-* **Subtle Hairline Borders Instead of Heavy Shadows**: Cards use flat surfaces with `1dp` subtle borders (`#F0F1F3` light / `#202A31` dark) and zero elevation, delivering a crisp, modern feel.
+* **Subtle Hairline Borders Instead of Heavy Shadows**: Cards use flat surfaces with `1dp` subtle borders (`#F0F1F3` light / `#1A2027` dark) and zero elevation, delivering a crisp, modern feel.
 * **Rounded Geometry**: Deep `24dp` rounded corners on cards and full `999dp` capsules for buttons, tabs, and status badges.
+* **Universal Premium Typography**: Pure geometric **Plus Jakarta Sans** across all activities, bottom sheets, widgets, and custom canvas views.
 * **Fluid Physics & Instant Feedback**: Every touch interaction responds immediately on pointer-down with tactile spring scaling (`scale(0.96)`) using critically damped curves (damping ratio `1.0`).
 
 ---
 
 ## 2. Color Palette & Visual Tokens
 
-| Token Name | Light Mode HEX | Dark Mode HEX | Semantic Role |
+| Token Name | Light Mode HEX | Dark Mode HEX (OLED) | Semantic Role |
 | :--- | :--- | :--- | :--- |
 | `primary_dark_charcoal` | `#111619` | `#FFFFFF` | Primary headers, display numbers, dial progress arc |
 | `accent_coral` | `#FF6B58` | `#FF7565` | Active alerts, high-congestion warnings, throttle tags |
-| `accent_coral_light` | `#FFF0EE` | `#2A1614` | Subtle tinted background for alert chips |
+| `accent_coral_light` | `#FFF0EE` | `#261210` | Subtle tinted background for alert chips |
 | `accent_emerald` | `#34C759` | `#30D158` | Active connection badges, low latency indicators, healthy status |
-| `canvas_background` | `#FFFFFF` | `#0E1215` | Default screen background canvas |
-| `canvas_speedtest_cream` | `#F5F4EE` | `#12171B` | Warm parchment canvas for gauge and diagnostic views |
-| `card_surface` | `#FFFFFF` | `#161D22` | Card body surface |
-| `card_border` | `#F0F1F3` | `#202A31` | `1dp` hairline borders for cards and row dividers |
-| `pill_cream_bg` | `#F6F4ED` | `#1E252B` | Secondary pill buttons, metric pods, and history chips |
+| `canvas_background` | `#FFFFFF` | `#000000` | True pitch-black OLED canvas across all screens |
+| `canvas_speedtest_cream` | `#F5F4EE` | `#000000` | Canvas for Speedtest and gauge views |
+| `card_surface` | `#FFFFFF` | `#0A0D10` | Dark charcoal OLED card body surface |
+| `card_border` | `#F0F1F3` | `#1A2027` | `1dp` hairline borders for cards and row dividers |
+| `pill_cream_bg` | `#F6F4ED` | `#12161A` | Secondary pill buttons, metric pods, and history chips |
 | `gauge_arc_active` | `#111619` | `#FFFFFF` | Gauge dial filled progress arc |
-| `gauge_arc_track` | `#D4D8DC` | `#2A353E` | Gauge dial background track |
+| `gauge_arc_track` | `#D4D8DC` | `#1C232B` | Gauge dial background track |
 | `text_primary` | `#111619` | `#FFFFFF` | High-emphasis headers and primary metric values |
-| `text_secondary` | `#8A919B` | `#8E98A0` | Subtitles, measurement units, day labels, chevron icons |
+| `text_secondary` | `#8A919B` | `#9DAAB8` | Subtitles, measurement units, day labels, chevron icons |
 
 ---
 
 ## 3. Typography Scale
 
-All typography uses the platform geometric sans-serif font family (`Inter` / `SF Pro` / `sans-serif`).
+All typography standardizes on **Plus Jakarta Sans** (`@font/plus_jakarta_sans`).
 
 | Style Level | Size (sp) | Weight | Letter Spacing | Line Height | Usage Example |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -78,9 +93,9 @@ All typography uses the platform geometric sans-serif font family (`Inter` / `SF
 
 ## 6. Pro Diagnostic Suite & Feature Modules
 
-### 6.1 Silent Status Bar Telemetry
-* **Mechanism**: Generates dynamic canvas text bitmaps in real time representing current transfer rates.
-* **Customization**: User-selectable between decimal megabits per second (`Mbps`) and binary megabytes per second (`MB/s`).
+### 6.1 Enlarged 2-Tier Stacked Status Bar Telemetry
+* **Mechanism**: Generates dynamic canvas text bitmaps in real time representing current transfer rates. Uses a 2-tier stacked architecture where numerical digits occupy up to 62% of icon height, with unit centered underneath. High speeds (e.g., 15 MB/s, 120 KB/s) stay huge, crisp, and readable at a glance without shrinking.
+* **Customization**: User-selectable between decimal megabits per second (`Mbps`) and binary megabytes per second (`MB/s`), and between stacked and inline layouts.
 
 ### 6.2 240-Degree Calibrated Gauge Accelerator
 * **Custom Canvas View**: `CustomGaugeMeter` sweeping 260 degrees (140° to 400°) with milestone ticks and decelerated indicator needle.
@@ -144,6 +159,19 @@ All typography uses the platform geometric sans-serif font family (`Inter` / `SF
 ### 6.15 Shareable "Speed Flex" Card
 * **Integrated**: `DiagnosticsActivity.shareSpeedFlexCard()`
 * **Mechanism**: Renders high-resolution image of the speedometer gauge and network metrics, exported via Android `FileProvider` to social platforms.
+
+### 6.16 Dedicated Wi-Fi Network Hub Screen
+* **Activity**: `WifiNetworksActivity` (`res/layout/activity_wifi_networks.xml`)
+* **Architecture**: Replaces legacy bottom sheet popups with a dedicated full-screen analytics center.
+* **Capabilities**:
+  * Filter & Sort pills: Most Data, Recent, Alphabetical A–Z.
+  * Hardware telemetry badges: Frequency bands (`5 GHz`, `6 GHz`, `2.4 GHz`), link speed (`866 Mbps`), and historical benchmark peak.
+  * Interactive Multi-Segment Bandwidth Distribution Hero Card displaying consumption share across all SSIDs.
+  * One-tap export of network telemetry reports to CSV / share sheet.
+
+### 6.17 Live Real-Time Speed Waveform Sparkline
+* **Custom Canvas View**: `LiveSpeedWaveformView` (`ui/design/LiveSpeedWaveformView.kt`)
+* **Canvas Engine**: Dual smooth cubic Bézier curves with dynamic gradient fill tracking 30 rolling data points of live throughput and jitter without GPU overhead.
 
 ---
 
